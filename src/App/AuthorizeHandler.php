@@ -2,6 +2,8 @@
 
 namespace GoldenPlanet\Silex\Obb\App;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
 class AuthorizeHandler
 {
     const ACCESS_TOKEN_URL = 'oauth/v2/token';
@@ -12,14 +14,19 @@ class AuthorizeHandler
     private $scope;
     private $redirectUrl;
     private $client;
+    /**
+     * @var EventDispatcher
+     */
+    private $dispatcher;
 
-    public function __construct(CurlHttpClient $client, $apiKey, $secret, $scope, $redirectUrl)
+    public function __construct(EventDispatcher $dispatcher, CurlHttpClient $client, $apiKey, $secret, $scope, $redirectUrl)
     {
         $this->apiKey = $apiKey;
         $this->secret = $secret;
         $this->scope = $scope;
         $this->redirectUrl = $redirectUrl;
         $this->client = $client;
+        $this->dispatcher = $dispatcher;
     }
 
     // Get the URL required to request authorization
@@ -54,6 +61,8 @@ class AuthorizeHandler
         $token = json_decode($response, true);
 
         if (isset($token['access_token'])) {
+            $event = new InstallationSuccess($domain, $token);
+            $this->dispatcher->dispatch('app.installation.success', $event);
             return $token['access_token'];
         } else {
             throw new \InvalidArgumentException(sprintf('Token structure is wrong %s', $response));

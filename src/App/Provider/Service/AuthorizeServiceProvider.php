@@ -25,6 +25,7 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
 
         $app['authorize.handler'] = function ($app) {
             return new AuthorizeHandler(
+                $app['dispatcher'],
                 $app['http.client'],
                 $app['api.app_key'],
                 $app['api.app_secret'],

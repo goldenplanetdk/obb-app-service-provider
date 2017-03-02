@@ -13,6 +13,10 @@ use GP\App\Provider\Service\AuthorizeServiceProvider;
 $app->register(new AuthorizeServiceProvider(), $parameters);
 ```
 
+Events:
+
+`app.installation.success`
+
 License
 -------
 MIT
