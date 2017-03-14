@@ -6,10 +6,12 @@ use GoldenPlanet\Silex\Obb\App\AuthorizeHandler;
 use GoldenPlanet\Silex\Obb\App\Controller\AuthorizeController;
 use GoldenPlanet\Silex\Obb\App\CurlHttpClient;
 use GoldenPlanet\Silex\Obb\App\Provider\Controller\AuthorizeControllerProvider;
+use GoldenPlanet\Silex\Obb\App\Validator\HmacValidator;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Api\BootableProviderInterface;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
@@ -38,11 +40,22 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
             return new CurlHttpClient();
         };
 
+        $app['validator.hmac'] = function ($app) {
+            return new HmacValidator($app['api.app_secret']);
+        };
+
         // init defaults from ENV
         $app['api.app_key'] = $_ENV['API_KEY'] ?? '';
         $app['api.app_secret'] = $_ENV['API_SECRET'] ?? '';
         $app['app.redirect_url'] = $_ENV['APP_REDIRECT_URL'] ?? '';
         $app['api.app_scope'] = 'read_products';
+
+        $app->before(function (Request $request, Application $app) {
+            $hmac = $request->query->get('hmac');
+            $queryString = $request->getQueryString();
+            $validator = $app['validator.hmac'];
+            $validator->validate($hmac, $queryString);
+        });
     }
 
     /**
