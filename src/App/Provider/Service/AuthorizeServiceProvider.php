@@ -51,10 +51,9 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
         $app['api.app_scope'] = 'read_products';
 
         $app->before(function (Request $request, Application $app) {
-            $hmac = $request->query->get('hmac');
             $queryString = $request->getQueryString();
             $validator = $app['validator.hmac'];
-            $validator->validate($hmac, $queryString);
+            $validator->validate($queryString);
         });
     }
 
