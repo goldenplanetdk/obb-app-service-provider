@@ -45,16 +45,15 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
         };
 
         // init defaults from ENV
-        $app['api.app_key'] = $_ENV['API_KEY'] ?? '';
-        $app['api.app_secret'] = $_ENV['API_SECRET'] ?? '';
-        $app['app.redirect_url'] = $_ENV['APP_REDIRECT_URL'] ?? '';
+        $app['api.app_key'] = $_SERVER['API_KEY'] ?? '';
+        $app['api.app_secret'] = $_SERVER['API_SECRET'] ?? '';
+        $app['app.redirect_url'] = $_SERVER['APP_REDIRECT_URL'] ?? '';
         $app['api.app_scope'] = 'read_products';
 
         $app->before(function (Request $request, Application $app) {
-            $hmac = $request->query->get('hmac');
             $queryString = $request->getQueryString();
             $validator = $app['validator.hmac'];
-            $validator->validate($hmac, $queryString);
+            $validator->validate($queryString);
         });
     }
 
