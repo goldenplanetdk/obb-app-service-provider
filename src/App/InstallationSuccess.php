@@ -4,7 +4,9 @@
 namespace GoldenPlanet\Silex\Obb\App;
 
 
-class InstallationSuccess
+use Symfony\Component\EventDispatcher\Event;
+
+class InstallationSuccess extends Event
 {
 
     private $shop;
