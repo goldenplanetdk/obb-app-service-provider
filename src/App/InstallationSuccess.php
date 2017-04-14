@@ -11,11 +11,13 @@ class InstallationSuccess extends Event
 
     private $shop;
     private $token;
+    private $protocol;
 
-    public function __construct($shop, $token)
+    public function __construct($shop, $token, $protocol)
     {
         $this->shop = $shop;
         $this->token = $token;
+        $this->protocol = $protocol;
     }
 
     /**
@@ -32,5 +34,13 @@ class InstallationSuccess extends Event
     public function token()
     {
         return $this->token;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function protocol()
+    {
+        return $this->protocol;
     }
 }

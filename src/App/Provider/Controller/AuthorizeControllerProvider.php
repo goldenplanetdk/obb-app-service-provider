@@ -12,6 +12,7 @@ class AuthorizeControllerProvider implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/auth/obb', 'authorize.controller:authorizeAction');
+        $controllers->get('/auth/obb/unauthorize', 'authorize.controller:unAuthorizeAction');
         return $controllers;
     }
 }

@@ -70,4 +70,9 @@ class AuthorizeController
             return new Response('Invalid request');
         }
     }
+
+    public function unAuthorizeAction(Request $request)
+    {
+        $shop = $request->query->get('shop');
+    }
 }
