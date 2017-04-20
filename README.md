@@ -16,6 +16,7 @@ $app->register(new AuthorizeServiceProvider(), $parameters);
 Events:
 
 `app.installation.success`
+`app.uninstalled`
 
 License
 -------

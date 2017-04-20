@@ -9,7 +9,9 @@ use GoldenPlanet\Silex\Obb\App\AuthorizeHandler;
 use GoldenPlanet\Silex\Obb\App\Controller\AuthorizeController;
 use GoldenPlanet\Silex\Obb\App\CurlHttpClient;
 use GoldenPlanet\Silex\Obb\App\Provider\Controller\AuthorizeControllerProvider;
+use GoldenPlanet\Silex\Obb\App\Uninstall\UninstallSuccessListener;
 use GoldenPlanet\Silex\Obb\App\Validator\HmacValidator;
+use GoldenPlanet\Silex\Obb\App\Validator\WebhookValidator;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Api\BootableProviderInterface;
@@ -27,7 +29,7 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
     public function register(Container $app)
     {
         $app['authorize.controller'] = function () use ($app) {
-            return new AuthorizeController($app['authorize.handler']);
+            return new AuthorizeController($app['authorize.handler'], $app['dispatcher']);
         };
 
         $app['authorize.handler'] = function ($app) {
@@ -49,11 +51,12 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
             return new HmacValidator($app['api.app_secret']);
         };
 
-        $app->register(new DoctrineServiceProvider(), array(
-            'db.options' => array(
-                'url' => $_SERVER['DATABASE_URL'] ?? 'postgres://ebrjlpiwhlyvyf:4252c2170228af3a9ff3293e7b3a647a86b0eef00cfd9e29376b2a7e329ecf62@ec2-54-247-99-159.eu-west-1.compute.amazonaws.com:5432/d9fra4qrmk1n9u',
-            ),
-        ));
+        $app['validator.webhook'] = function ($app) {
+            return new WebhookValidator($app['api.app_secret']);
+        };
+
+
+
 
         // init defaults from ENV
         $app['api.app_key'] = $_SERVER['API_KEY'] ?? '';
@@ -61,12 +64,41 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
         $app['app.redirect_url'] = $_SERVER['APP_REDIRECT_URL'] ?? '';
 
         $app->before(function (Request $request, Application $app) {
-            $queryString = $request->server->get('QUERY_STRING');
-            $validator = $app['validator.hmac'];
-            $validator->validate($queryString);
+            if ($request->headers->get('X-OBB-Signature')) {
+                // webhook validation
+                $validator = $app['validator.webhook'];
+                $payload = $request->getContent();
+                $validator->validate($payload, $request->headers->get('X-OBB-SIGNATURE'));
+            } else {
+                // hmac validation
+                $queryString = $request->server->get('QUERY_STRING');
+                $validator = $app['validator.hmac'];
+                $validator->validate($queryString);
+
+            }
         });
 
-        // db init
+
+
+        $app['store.api.factory'] = function ($app) {
+            return new StoreApiFactory($app['db'], $app['http.client']);
+        };
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function boot(Application $app)
+    {
+        $app->mount('/', new AuthorizeControllerProvider());
+        $url = $app['db.url'] ?? ($_SERVER['DATABASE_URL'] ?? '');
+        $app->register(new DoctrineServiceProvider(), array(
+            'db.options' => array(
+                'url' => $url,
+            ),
+        ));
+
+                // db init
         /** @var AbstractSchemaManager $sm */
         $sm = $app['db']->getSchemaManager();
         $tables = $sm->listTables();
@@ -92,18 +124,6 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
             $connection->exec($queries[0]);
         }
 
-        $app['store.api.factory'] = function ($app) {
-            return new StoreApiFactory($app['db'], $app['http.client']);
-        };
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function boot(Application $app)
-    {
-        $app->mount('/', new AuthorizeControllerProvider());
-
         $dispatcher = $app['dispatcher'];
 
         $params = parse_url($app['app.redirect_url']);
@@ -112,5 +132,8 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
         $connection = $app['db'];
         $listener = new InstallSuccessListener($connection, $app['store.api.factory'], $backUrl);
         $dispatcher->addListener('app.installation.success', [$listener, 'onSuccess'], -100);
+
+        $listener = new UninstallSuccessListener($connection);
+        $dispatcher->addListener('app.uninstalled', [$listener, 'onSuccess'], -100);
     }
 }
