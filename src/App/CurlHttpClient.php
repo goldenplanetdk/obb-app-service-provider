@@ -2,21 +2,37 @@
 
 namespace GoldenPlanet\Silex\Obb\App;
 
-class CurlHttpClient
+class CurlHttpClient implements Client
 {
 
-    public function request($method, $url, $query = '', $payload = '', $request_headers = array())
+    public function request($method, $url, $options = [])
     {
-        $url = $this->curlAppendQuery($url, $query);
+        $defaults = [
+            'headers' => [],
+            'form_params' => [],
+            'query' => [],
+        ];
+
+        $options = array_merge($defaults, $options);
+
+        $url = $this->curlAppendQuery($url, $options['query']);
         $ch = curl_init($url);
-        $this->curlSetopts($ch, $method, $payload, $request_headers);
+        $this->curlSetopts($ch, $method, $options['form_params'], $options['headers']);
         $response = curl_exec($ch);
         $errno = curl_errno($ch);
         $error = curl_error($ch);
         curl_close($ch);
-        if ($errno) throw new \Exception($error, $errno);
+
+        if ($errno) {
+            throw new \Exception($error, $errno);
+        }
         list($message_headers, $message_body) = preg_split("/\r\n\r\n|\n\n|\r\r/", $response, 2);
-        $this->last_response_headers = $this->curlParseHeaders($message_headers);
+
+        $headers = $this->curlParseHeaders($message_headers);
+        if ($headers['http_status_code'] >= 400) {
+            throw new \DomainException(sprintf('Bad request. [%d]', $headers['http_status_code']));
+        }
+
         return $message_body;
     }
 

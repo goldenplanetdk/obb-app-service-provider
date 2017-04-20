@@ -14,12 +14,13 @@ class AuthorizeHandler
     private $scope;
     private $redirectUrl;
     private $client;
+
     /**
      * @var EventDispatcher
      */
     private $dispatcher;
 
-    public function __construct(EventDispatcher $dispatcher, CurlHttpClient $client, $apiKey, $secret, $scope, $redirectUrl)
+    public function __construct(EventDispatcher $dispatcher, Client $client, $apiKey, $secret, $scope, $redirectUrl)
     {
         $this->apiKey = $apiKey;
         $this->secret = $secret;
@@ -57,11 +58,11 @@ class AuthorizeHandler
             'grant_type' => 'authorization_code',
             'redirect_uri' => $this->redirectUrl,
         ];
-        $response = $this->client->request('POST', $url, '', $payload, array());
+        $response = $this->client->request('POST', $url, ['form_params' => $payload]);
         $token = json_decode($response, true);
 
         if (isset($token['access_token'])) {
-            $event = new InstallationSuccess($domain, $token);
+            $event = new InstallationSuccess($domain, $token['access_token'], $protocol);
             $this->dispatcher->dispatch('app.installation.success', $event);
             return $token['access_token'];
         } else {
