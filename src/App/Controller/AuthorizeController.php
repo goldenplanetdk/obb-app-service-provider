@@ -3,7 +3,9 @@
 namespace GoldenPlanet\Silex\Obb\App\Controller;
 
 use GoldenPlanet\Silex\Obb\App\AuthorizeHandler;
+use GoldenPlanet\Silex\Obb\App\UninstalledSuccess;
 use Silex\Application;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,10 +17,15 @@ class AuthorizeController
      * @var AuthorizeHandler
      */
     private $authHandler;
+    /**
+     * @var EventDispatcher
+     */
+    private $dispatcher;
 
-    public function __construct(AuthorizeHandler $authHandler)
+    public function __construct(AuthorizeHandler $authHandler, EventDispatcher $dispatcher)
     {
         $this->authHandler = $authHandler;
+        $this->dispatcher = $dispatcher;
     }
 
     public function authorizeAction(Request $request, Application $app)
@@ -71,8 +78,18 @@ class AuthorizeController
         }
     }
 
-    public function unAuthorizeAction(Request $request)
+    public function unAuthorizeAction(Request $request, Application $app)
     {
-        $shop = $request->query->get('shop');
+        $data = json_decode($request->getContent(), true);
+
+        if (empty($data)) {
+            return new Response('Bad request', 404);
+        }
+
+        $event = new UninstalledSuccess($data);
+        $this->dispatcher->dispatch('app.uninstalled', $event);
+        $app['monolog']->addDebug('removing app');
+
+        return new Response('Success');
     }
 }
