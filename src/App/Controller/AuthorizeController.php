@@ -70,8 +70,6 @@ class AuthorizeController
             $token = $this->authHandler->token($shop, $code);
 
             // Now, request the token and store it in your session.
-            $session->set('token', $token);
-
             return new RedirectResponse('http://' . $shop . '/admin/apps/');
         } else {
             return new Response('Invalid request');
