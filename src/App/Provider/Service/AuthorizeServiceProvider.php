@@ -61,6 +61,7 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
         // init defaults from ENV
         $app['api.app_key'] = $_SERVER['API_KEY'] ?? '';
         $app['api.app_secret'] = $_SERVER['API_SECRET'] ?? '';
+        $app['api.app_scope'] = $_SERVER['API_SCOPE'] ?? '';
         $app['app.redirect_url'] = $_SERVER['APP_REDIRECT_URL'] ?? '';
 
         $app->before(function (Request $request, Application $app) {
