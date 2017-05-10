@@ -132,9 +132,9 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
 
         $connection = $app['db'];
         $listener = new InstallSuccessListener($connection, $app['store.api.factory'], $backUrl);
-        $dispatcher->addListener('app.installation.success', [$listener, 'onSuccess'], -100);
+        $dispatcher->addListener('app.installation.success', [$listener, 'onSuccess'], 100);
 
         $listener = new UninstallSuccessListener($connection);
-        $dispatcher->addListener('app.uninstalled', [$listener, 'onSuccess'], -100);
+        $dispatcher->addListener('app.uninstalled', [$listener, 'onSuccess'], 100);
     }
 }
