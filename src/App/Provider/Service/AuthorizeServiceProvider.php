@@ -118,7 +118,7 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
             $myTable->addColumn("shop", "string", array("length" => 256));
             $myTable->addColumn("token", "string", ['notnull' => true]);
             $myTable->addColumn("is_secure_protocol", "boolean");
-            $myTable->addColumn("created_at", "timestamp", ['default' => 'CURRENT_TIMESTAMP']);
+            $myTable->addColumn("created_at", "datetime");
             $myTable->setPrimaryKey(array("id"));
             $queries = $schema->toSql($app['db']->getDatabasePlatform());
             /** @var Connection $connection */

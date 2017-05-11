@@ -35,7 +35,8 @@ class InstallSuccessListener
         $data = [
             'shop' => $event->shop(),
             'token' => $event->token(),
-            'is_secure_protocol' => (int) ($event->protocol() == 'https')
+            'is_secure_protocol' => (int) ($event->protocol() == 'https'),
+            'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
         ];
         $this->connection->insert('installations', $data);
 
