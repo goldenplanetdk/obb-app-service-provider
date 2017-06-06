@@ -32,11 +32,8 @@ class AuthorizeController
     {
         $shop = $request->query->get('shop');
         $code = $request->query->get('code');
-        $proto = $request->query->get('proto', 'http');
-
-        if ($proto != 'http' && $proto != 'https') {
-            throw new \InvalidArgumentException('Invalid proto value');
-        }
+        $isSecure = $request->query->get('https', 0);
+        $proto = $isSecure ? 'https' : 'http';
 
         if (!preg_match('#^[a-z0-9.-]+$#', $shop)) {
             throw new \InvalidArgumentException('Invalid shop value');
@@ -67,10 +64,10 @@ class AuthorizeController
             }
 
             $session->clear();
-            $token = $this->authHandler->token($shop, $code);
+            $token = $this->authHandler->token($shop, $code, $proto);
 
             // Now, request the token and store it in your session.
-            return new RedirectResponse('http://' . $shop . '/admin/apps/');
+            return new RedirectResponse($proto . '://' . $shop . '/admin/apps/');
         } else {
             return new Response('Invalid request');
         }
