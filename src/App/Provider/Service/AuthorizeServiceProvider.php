@@ -17,8 +17,10 @@ use Pimple\ServiceProviderInterface;
 use Silex\Api\BootableProviderInterface;
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
+use Silex\Provider\SessionServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use GoldenPlanet\Silex\Obb\App\Install\InstallSuccessListener;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 
 class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
@@ -79,7 +81,13 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
             }
         });
 
+        $app->register(new SessionServiceProvider());
 
+        $app['session.storage.handler'] = function () use ($app) {
+            return new PdoSessionHandler(
+                $app['db']->getWrappedConnection()
+            );
+        };
 
         $app['store.api.factory'] = function ($app) {
             return new StoreApiFactory($app['db'], $app['http.client']);
