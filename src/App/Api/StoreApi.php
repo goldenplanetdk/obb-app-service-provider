@@ -53,7 +53,7 @@ class StoreApi
         if (isset($response['errors'])) {
             throw new \DomainException("Bad request. $method - $path");
         }
-        return (is_array($response) and (count($response) > 0)) ? array_shift($response) : $response;
+        return $response;
     }
 
 }
