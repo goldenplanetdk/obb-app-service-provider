@@ -2,7 +2,7 @@
 
 namespace GoldenPlanet\Silex\Obb\App;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class AuthorizeHandler
 {
@@ -16,11 +16,11 @@ class AuthorizeHandler
     private $client;
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     private $dispatcher;
 
-    public function __construct(EventDispatcher $dispatcher, Client $client, $apiKey, $secret, $scope, $redirectUrl)
+    public function __construct(EventDispatcherInterface $dispatcher, Client $client, $apiKey, $secret, $scope, $redirectUrl)
     {
         $this->apiKey = $apiKey;
         $this->secret = $secret;
