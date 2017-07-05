@@ -2,8 +2,8 @@
 
 namespace GoldenPlanet\Silex\Obb\App\Controller;
 
-use GoldenPlanet\Silex\Obb\App\AuthorizeHandler;
-use GoldenPlanet\Silex\Obb\App\UninstalledSuccess;
+use GoldenPlanet\Gpp\App\Installer\AuthorizeHandler;
+use GoldenPlanet\Gpp\App\Installer\UninstalledSuccess;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\RedirectResponse;

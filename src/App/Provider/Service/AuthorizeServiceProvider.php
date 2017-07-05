@@ -4,14 +4,15 @@ namespace GoldenPlanet\Silex\Obb\App\Provider\Service;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use GoldenPlanet\Silex\Obb\App\Api\StoreApiFactory;
-use GoldenPlanet\Silex\Obb\App\AuthorizeHandler;
+use GoldenPlanet\Gpp\App\Installer\Api\StoreApiFactory;
+use GoldenPlanet\Gpp\App\Installer\AuthorizeHandler;
+use GoldenPlanet\Gpp\App\Installer\CurlHttpClient;
+use GoldenPlanet\Gpp\App\Installer\Install\InstallSuccessListener;
+use GoldenPlanet\Gpp\App\Installer\Uninstall\UninstallSuccessListener;
+use GoldenPlanet\Gpp\App\Installer\Validator\HmacValidator;
+use GoldenPlanet\Gpp\App\Installer\Validator\WebhookValidator;
 use GoldenPlanet\Silex\Obb\App\Controller\AuthorizeController;
-use GoldenPlanet\Silex\Obb\App\CurlHttpClient;
 use GoldenPlanet\Silex\Obb\App\Provider\Controller\AuthorizeControllerProvider;
-use GoldenPlanet\Silex\Obb\App\Uninstall\UninstallSuccessListener;
-use GoldenPlanet\Silex\Obb\App\Validator\HmacValidator;
-use GoldenPlanet\Silex\Obb\App\Validator\WebhookValidator;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Api\BootableProviderInterface;
@@ -19,7 +20,6 @@ use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
-use GoldenPlanet\Silex\Obb\App\Install\InstallSuccessListener;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 
 class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProviderInterface
