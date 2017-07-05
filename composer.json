@@ -11,7 +11,7 @@
     "require": {
         "php": ">=7.0",
         "silex/silex": "^2",
-        "goldenplanetdk/gpp-app-installer": "dev-master"
+        "goldenplanetdk/gpp-app-installer": "^0.1"
     },
     "autoload": {
         "psr-4": {
