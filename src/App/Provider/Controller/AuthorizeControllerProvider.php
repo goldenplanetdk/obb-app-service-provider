@@ -13,6 +13,7 @@ class AuthorizeControllerProvider implements ControllerProviderInterface
 
         $controllers->get('/auth/obb', 'authorize.controller:authorizeAction');
         $controllers->post('/auth/obb/unauthorize', 'authorize.controller:unAuthorizeAction');
+        $controllers->get('/ping', 'authorize.controller:pingAction');
         return $controllers;
     }
 }
