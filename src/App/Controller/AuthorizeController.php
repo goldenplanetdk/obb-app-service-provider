@@ -87,4 +87,10 @@ class AuthorizeController
 
         return new Response('Success');
     }
+
+    public function pingAction(Request $request, Application $app) {
+        $app['db']->fetchAll('SELECT COUNT(*) FROM sessions');
+
+        return new Response('OK');
+	}
 }

@@ -67,6 +67,9 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
         $app['app.redirect_url'] = $_SERVER['APP_REDIRECT_URL'] ?? '';
 
         $app->before(function (Request $request, Application $app) {
+            if ($request->getRequestUri() == '/ping') { // no validation for ping
+                return;
+            }
             if ($request->headers->get('X-OBB-Signature')) {
                 // webhook validation
                 $validator = $app['validator.webhook'];
