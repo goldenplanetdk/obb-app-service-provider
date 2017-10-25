@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7fee66bc66edd57f7ce84f39cdf3134e",
-    "content-hash": "ff5e5280fce7bd8b567ac897b3472e1f",
+    "hash": "9f9b23d2ddacd9732ff62843f4389221",
+    "content-hash": "61333324484ac17c5fdf8a3f7923b47e",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -485,7 +485,7 @@
         },
         {
             "name": "goldenplanetdk/gpp-app-installer",
-            "version": "dev-master",
+            "version": "0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/goldenplanetdk/gpp-app-installer.git",
@@ -1155,9 +1155,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "goldenplanetdk/gpp-app-installer": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
