@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c998fddf9ec9bc1ac4fdc9f24673b03e",
-    "content-hash": "880f11c7bfca7a4f2139289e80a555c0",
+    "hash": "96c5414d55ede60875c5f0541bb54e1b",
+    "content-hash": "ed9cc9e30ac3a421974e47be7913682a",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -485,16 +485,16 @@
         },
         {
             "name": "goldenplanetdk/gpp-app-installer",
-            "version": "0.3",
+            "version": "0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/goldenplanetdk/gpp-app-installer.git",
-                "reference": "c4d02ab31d03e4e1703312b8f3a683967ac56aa6"
+                "reference": "5fc3806398ab2877c63408f1f02551964841e909"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/goldenplanetdk/gpp-app-installer/zipball/c4d02ab31d03e4e1703312b8f3a683967ac56aa6",
-                "reference": "c4d02ab31d03e4e1703312b8f3a683967ac56aa6",
+                "url": "https://api.github.com/repos/goldenplanetdk/gpp-app-installer/zipball/5fc3806398ab2877c63408f1f02551964841e909",
+                "reference": "5fc3806398ab2877c63408f1f02551964841e909",
                 "shasum": ""
             },
             "require": {
@@ -519,7 +519,7 @@
                 }
             ],
             "description": "Installed app for GPP",
-            "time": "2017-11-13 08:43:09"
+            "time": "2017-11-13 10:35:05"
         },
         {
             "name": "pimple/pimple",
