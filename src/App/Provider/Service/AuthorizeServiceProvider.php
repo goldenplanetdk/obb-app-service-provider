@@ -84,7 +84,7 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
                 // update scheme
                 $request->get('shop');
                 $isSecure = (bool)$request->get('https', false);
-                $app['dispatcher']->dispatch(new UpdateScheme($request->get('shop'), $isSecure));
+                $app['dispatcher']->dispatch('app.update.scheme', new UpdateScheme($request->get('shop'), $isSecure));
             }
         });
 
@@ -148,6 +148,7 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
         $connection = $app['db'];
         $listener = new InstallSuccessListener($connection, $app['store.api.factory'], $backUrl);
         $dispatcher->addListener('app.installation.success', [$listener, 'onSuccess'], 100);
+        $dispatcher->addListener('app.update.scheme', [$listener, 'updateScheme'], 100);
 
         $listener = new UninstallSuccessListener($connection);
         $dispatcher->addListener('app.uninstalled', [$listener, 'onSuccess'], 100);
