@@ -9,6 +9,7 @@ use GoldenPlanet\Gpp\App\Installer\AuthorizeHandler;
 use GoldenPlanet\Gpp\App\Installer\CurlHttpClient;
 use GoldenPlanet\Gpp\App\Installer\Install\InstallSuccessListener;
 use GoldenPlanet\Gpp\App\Installer\Uninstall\UninstallSuccessListener;
+use GoldenPlanet\Gpp\App\Installer\UpdateScheme;
 use GoldenPlanet\Gpp\App\Installer\Validator\HmacValidator;
 use GoldenPlanet\Gpp\App\Installer\Validator\WebhookValidator;
 use GoldenPlanet\Silex\Obb\App\Controller\AuthorizeController;
@@ -80,7 +81,10 @@ class AuthorizeServiceProvider implements ServiceProviderInterface, BootableProv
                 $queryString = $request->server->get('QUERY_STRING');
                 $validator = $app['validator.hmac'];
                 $validator->validate($queryString);
-
+                // update scheme
+                $request->get('shop');
+                $isSecure = (bool)$request->get('https', false);
+                $app['dispatcher']->dispatch(new UpdateScheme($request->get('shop'), $isSecure));
             }
         });
 
